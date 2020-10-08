@@ -3715,6 +3715,7 @@ jobs:
     - rabbitmq_web_mqtt_examples
     - rabbitmq_web_stomp
     - rabbitmq_web_stomp_examples
+    - package-generic-unix
     runs-on: ubuntu-18.04
     if: always()
     steps:

@@ -46,7 +46,7 @@ package-generic-unix:
           ci/scripts/collect.sh
 finish:
   name: finish
-  needs: #@ prepare_jobs_names + [dep.name for dep in data.values.deps if not getattr(dep, "skip_tests", False)]
+  needs: #@ prepare_jobs_names + [dep.name for dep in data.values.deps if not getattr(dep, "skip_tests", False)] + ['package-generic-unix']
   runs-on: ubuntu-18.04
   if: always()
   #@yaml/text-templated-strings
