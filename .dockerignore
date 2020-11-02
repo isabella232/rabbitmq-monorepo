@@ -1,0 +1,5 @@
+/.github/
+/ci/dockerfiles/
+/workflow_sources/
+/.travis.yml
+/.travis.yml.patch
