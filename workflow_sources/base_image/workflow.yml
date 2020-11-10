@@ -9,14 +9,16 @@
 #@   return jobs
 #@ end
 
+#@ def to_build_args(d):
+#@   return ",".join(['{0}={1}'.format(k,d[k]) for k in d.keys()])
+#@ end
+
 #@ def base_image_job(erlang_version):
 name: #@ ("ci-base-" + erlang_version).replace(".", "_")
 runs-on: ubuntu-18.04
 steps:
   - name: CHECKOUT REPOSITORY
     uses: actions/checkout@v2
-    with:
-      path: rabbitmq
   - name: CREATE ERLANG+ELIXIR IMAGE
     uses: docker/build-push-action@v1
     with:
@@ -24,15 +26,8 @@ steps:
       password: ${{ secrets.GCR_JSON_KEY }}
       registry: eu.gcr.io
       repository: cf-rabbitmq-core/erlang_elixir
-      dockerfile: #@ "rabbitmq/ci/dockerfiles/" + erlang_version + "/erlang_elixir"
+      dockerfile: #@ 'ci/dockerfiles/{}/erlang_elixir'.format(erlang_version)
       tags: #@ erlang_version
-  #@ for ref in data.values.secondary_umbrella_gitrefs:
-  - name: #@ 'CHECKOUT REPOSITORY ({})'.format(ref)
-    uses: actions/checkout@v2
-    with:
-      ref: #@ ref
-      path: #@ 'rabbitmq-{}'.format(ref)
-  #@ end
   - name: CREATE BASE CI IMAGE
     uses: docker/build-push-action@v1
     with:
@@ -40,8 +35,11 @@ steps:
       password: ${{ secrets.GCR_JSON_KEY }}
       registry: eu.gcr.io
       repository: cf-rabbitmq-core/ci-base
-      dockerfile: rabbitmq/ci/dockerfiles/ci-base
-      build_args: #@ 'ERLANG_VERSION={}'.format(erlang_version)
+      dockerfile: ci/dockerfiles/ci-base
+      #@ build_args = {}
+      #@ build_args["ERLANG_VERSION"] = erlang_version
+      #@ build_args["SECONDARY_UMBRELLA_GITREFS"] = ' '.join(data.values.secondary_umbrella_gitrefs)
+      build_args: #@ to_build_args(build_args)
       tags: #@ erlang_version
 #@ end
 ---

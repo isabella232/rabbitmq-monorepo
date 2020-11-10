@@ -18,5 +18,11 @@ USER ${UNPRIVILEGED_USER}
 
 WORKDIR /workspace
 
-# Copy in the secondary umbrellas fetched in GitHub Actions
-COPY . .
+COPY ci/scripts/fetch_secondary_umbrellas.sh .
+
+# If we clone the monorepo at a ref when the monorepo was still rabbitmq-server,
+# then we just get rabbitmq-server (not the monorepo as it would have looked, had
+# it existed at that time). So for the time being, secondary umbrellas will derive
+# from rabbitmq-public-umbrella (as they always have)
+ARG SECONDARY_UMBRELLA_GITREFS
+RUN bash fetch_secondary_umbrellas.sh ${SECONDARY_UMBRELLA_GITREFS}
