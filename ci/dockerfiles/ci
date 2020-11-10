@@ -26,8 +26,6 @@ WORKDIR /workspace/rabbitmq
 
 COPY . .
 
-# RUN chown --recursive ${UNPRIVILEGED_USER} /workspace
-
 RUN BUILDEVENT_APIKEY=${BUILDEVENT_APIKEY} \
     buildevents cmd ${GITHUB_RUN_ID} ${GITHUB_RUN_ID}-prepare deps -- \
             make deps test-deps \

@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-refs=$1
+refs="$@"
 
 for version in ${refs}; do
   umbrella="umbrellas/$version"
