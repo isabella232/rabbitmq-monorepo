@@ -8,6 +8,27 @@ jobs:
     steps:
     - name: CHECKOUT REPOSITORY
       uses: actions/checkout@v2
+      with:
+        path: rabbitmq
+    - name: CREATE ERLANG+ELIXIR IMAGE
+      uses: docker/build-push-action@v1
+      with:
+        username: _json_key
+        password: ${{ secrets.GCR_JSON_KEY }}
+        registry: eu.gcr.io
+        repository: cf-rabbitmq-core/erlang_elixir
+        dockerfile: rabbitmq/ci/dockerfiles/22.3/erlang_elixir
+        tags: "22.3"
+    - name: CHECKOUT REPOSITORY (v3.7.28)
+      uses: actions/checkout@v2
+      with:
+        ref: v3.7.28
+        path: rabbitmq-v3.7.28
+    - name: CHECKOUT REPOSITORY (v3.8.9)
+      uses: actions/checkout@v2
+      with:
+        ref: v3.8.9
+        path: rabbitmq-v3.8.9
     - name: CREATE BASE CI IMAGE
       uses: docker/build-push-action@v1
       with:
@@ -15,7 +36,8 @@ jobs:
         password: ${{ secrets.GCR_JSON_KEY }}
         registry: eu.gcr.io
         repository: cf-rabbitmq-core/ci-base
-        dockerfile: ci/dockerfiles/22.3/base
+        dockerfile: rabbitmq/ci/dockerfiles/ci-base
+        build_args: ERLANG_VERSION=22.3
         tags: "22.3"
   ci-base-23_1:
     name: ci-base-23_1
@@ -23,6 +45,27 @@ jobs:
     steps:
     - name: CHECKOUT REPOSITORY
       uses: actions/checkout@v2
+      with:
+        path: rabbitmq
+    - name: CREATE ERLANG+ELIXIR IMAGE
+      uses: docker/build-push-action@v1
+      with:
+        username: _json_key
+        password: ${{ secrets.GCR_JSON_KEY }}
+        registry: eu.gcr.io
+        repository: cf-rabbitmq-core/erlang_elixir
+        dockerfile: rabbitmq/ci/dockerfiles/23.1/erlang_elixir
+        tags: "23.1"
+    - name: CHECKOUT REPOSITORY (v3.7.28)
+      uses: actions/checkout@v2
+      with:
+        ref: v3.7.28
+        path: rabbitmq-v3.7.28
+    - name: CHECKOUT REPOSITORY (v3.8.9)
+      uses: actions/checkout@v2
+      with:
+        ref: v3.8.9
+        path: rabbitmq-v3.8.9
     - name: CREATE BASE CI IMAGE
       uses: docker/build-push-action@v1
       with:
@@ -30,5 +73,6 @@ jobs:
         password: ${{ secrets.GCR_JSON_KEY }}
         registry: eu.gcr.io
         repository: cf-rabbitmq-core/ci-base
-        dockerfile: ci/dockerfiles/23.1/base
+        dockerfile: rabbitmq/ci/dockerfiles/ci-base
+        build_args: ERLANG_VERSION=23.1
         tags: "23.1"

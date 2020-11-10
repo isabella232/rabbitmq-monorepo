@@ -15,6 +15,24 @@ runs-on: ubuntu-18.04
 steps:
   - name: CHECKOUT REPOSITORY
     uses: actions/checkout@v2
+    with:
+      path: rabbitmq
+  - name: CREATE ERLANG+ELIXIR IMAGE
+    uses: docker/build-push-action@v1
+    with:
+      username: _json_key
+      password: ${{ secrets.GCR_JSON_KEY }}
+      registry: eu.gcr.io
+      repository: cf-rabbitmq-core/erlang_elixir
+      dockerfile: #@ "rabbitmq/ci/dockerfiles/" + erlang_version + "/erlang_elixir"
+      tags: #@ erlang_version
+  #@ for ref in data.values.secondary_umbrella_gitrefs:
+  - name: #@ 'CHECKOUT REPOSITORY ({})'.format(ref)
+    uses: actions/checkout@v2
+    with:
+      ref: #@ ref
+      path: #@ 'rabbitmq-{}'.format(ref)
+  #@ end
   - name: CREATE BASE CI IMAGE
     uses: docker/build-push-action@v1
     with:
@@ -22,7 +40,8 @@ steps:
       password: ${{ secrets.GCR_JSON_KEY }}
       registry: eu.gcr.io
       repository: cf-rabbitmq-core/ci-base
-      dockerfile: #@ "ci/dockerfiles/" + erlang_version + "/base"
+      dockerfile: rabbitmq/ci/dockerfiles/ci-base
+      build_args: #@ 'ERLANG_VERSION={}'.format(erlang_version)
       tags: #@ erlang_version
 #@ end
 ---
