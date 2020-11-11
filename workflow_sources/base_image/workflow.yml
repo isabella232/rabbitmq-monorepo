@@ -19,7 +19,7 @@ runs-on: ubuntu-18.04
 steps:
   - name: CHECKOUT REPOSITORY
     uses: actions/checkout@v2
-  - name: CREATE ERLANG+ELIXIR IMAGE
+  - name: #@ 'CREATE ERLANG+ELIXIR IMAGE ({})'.format(erlang_version)
     uses: docker/build-push-action@v1
     with:
       username: _json_key
@@ -28,7 +28,7 @@ steps:
       repository: cf-rabbitmq-core/erlang_elixir
       dockerfile: #@ 'ci/dockerfiles/{}/erlang_elixir'.format(erlang_version)
       tags: #@ erlang_version
-  - name: CREATE BASE CI IMAGE
+  - name: #@ 'CREATE BASE CI IMAGE ({})'.format(erlang_version)
     uses: docker/build-push-action@v1
     with:
       username: _json_key
@@ -43,7 +43,7 @@ steps:
       tags: #@ erlang_version
 #@ end
 ---
-name: Base Images
+name: Workflow Base Images
 #! https://github.com/k14s/ytt/issues/189
 a_magic_string_that_we_will_sed_to_on: [workflow_dispatch]
 jobs: #@ jobs_map_from_list([base_image_job(v) for v in data.values.erlang_versions])

@@ -14,11 +14,11 @@ RUN useradd \
     --comment 'CI unprivileged user' \
     ${UNPRIVILEGED_USER}
 
-USER ${UNPRIVILEGED_USER}
-
 WORKDIR /workspace
 
 RUN chown --recursive ${UNPRIVILEGED_USER} /workspace
+
+USER ${UNPRIVILEGED_USER}
 
 COPY ci/scripts/fetch_secondary_umbrellas.sh .
 
