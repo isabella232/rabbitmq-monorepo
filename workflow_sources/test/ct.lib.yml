@@ -1,6 +1,6 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:assert", "assert")
-#@ load("util.star", "is_unique", "group_by_time", "to_build_args")
+#@ load("util.star", "is_unique", "group_by_one", "to_build_args")
 #@ load("helpers.star", "ci_image_tag", "ci_dep_image")
 
 #@ def checks_job(dep):
@@ -106,7 +106,7 @@ steps:
 
 #@ def collect_job(dep):
 name: #@ dep.name
-needs: #@ [dep.name + "-checks"] + [dep.name + "-ct-" + group["name"] for group in group_by_time(dep.suites)]
+needs: #@ [dep.name + "-checks"] + [dep.name + "-ct-" + group["name"] for group in group_by_one(dep.suites)]
 runs-on: ubuntu-18.04
 if: always()
 #@yaml/text-templated-strings
